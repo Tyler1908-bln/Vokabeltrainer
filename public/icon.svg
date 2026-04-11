@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Vocabito Logo">
+  <defs>
+    <linearGradient id="bg" x1="92" y1="48" x2="420" y2="464" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#78d7ff"/>
+      <stop offset="0.52" stop-color="#1cb0f6"/>
+      <stop offset="1" stop-color="#147fbd"/>
+    </linearGradient>
+    <linearGradient id="card" x1="126" y1="118" x2="386" y2="392" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eaf8ff"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="16" stdDeviation="12" flood-color="#0a5d94" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <circle cx="118" cy="104" r="54" fill="#ffffff" opacity="0.18"/>
+  <circle cx="408" cy="410" r="72" fill="#ffffff" opacity="0.12"/>
+
+  <g filter="url(#softShadow)">
+    <path
+      d="M116 147c0-31 25-56 56-56h168c31 0 56 25 56 56v156c0 31-25 56-56 56h-78l-71 55c-18 14-44 1-44-22v-35c-18-8-31-26-31-48V147Z"
+      fill="url(#card)"
+    />
+    <path
+      d="M159 309V149c0-9 7-16 16-16h162c9 0 16 7 16 16v160c0 9-7 16-16 16H175c-9 0-16-7-16-16Z"
+      fill="#ffffff"
+      opacity="0.58"
+    />
+  </g>
+
+  <path
+    d="M182 176l61 129c5 11 21 11 26 0l61-129"
+    fill="none"
+    stroke="#176c9e"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="34"
+  />
+
+  <g transform="translate(296 130) rotate(8)">
+    <rect x="0" y="0" width="104" height="72" rx="16" fill="#ef5350"/>
+    <rect x="0" y="22" width="104" height="28" fill="#ffd85a"/>
+    <rect x="13" y="26" width="18" height="20" rx="4" fill="#c63d3d" opacity="0.9"/>
+  </g>
+
+  <circle cx="194" cy="150" r="18" fill="#58cc02"/>
+  <path
+    d="M169 384c48 22 124 22 173 0"
+    fill="none"
+    stroke="#d7f3ff"
+    stroke-linecap="round"
+    stroke-width="18"
+  />
+</svg>

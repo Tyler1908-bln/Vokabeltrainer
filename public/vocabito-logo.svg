@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" role="img" aria-label="Vocabito">
+  <defs>
+    <linearGradient id="logoBlue" x1="36" y1="20" x2="184" y2="202" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#78d7ff"/>
+      <stop offset="0.55" stop-color="#1cb0f6"/>
+      <stop offset="1" stop-color="#147fbd"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="22" y="22" width="176" height="176" rx="46" fill="url(#logoBlue)"/>
+  <path
+    d="M58 73c0-16 13-29 29-29h58c16 0 29 13 29 29v57c0 16-13 29-29 29h-31l-31 25c-10 8-25 1-25-12v-15c-1-2 0-68 0-84Z"
+    fill="#ffffff"
+    opacity="0.94"
+  />
+  <path
+    d="M78 75l29 66c3 7 13 7 16 0l30-66"
+    fill="none"
+    stroke="#176c9e"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="18"
+  />
+  <g transform="translate(137 58) rotate(8)">
+    <rect width="50" height="35" rx="8" fill="#ef5350"/>
+    <rect y="11" width="50" height="14" fill="#ffd85a"/>
+  </g>
+
+  <text
+    x="230"
+    y="138"
+    fill="#176c9e"
+    font-family="Nunito, Trebuchet MS, Segoe UI, sans-serif"
+    font-size="82"
+    font-weight="1000"
+    letter-spacing="2"
+  >Vocabito</text>
+  <text
+    x="235"
+    y="172"
+    fill="#4f7790"
+    font-family="Nunito, Trebuchet MS, Segoe UI, sans-serif"
+    font-size="25"
+    font-weight="800"
+    letter-spacing="4"
+  >SPANISCH LERNEN</text>
+</svg>

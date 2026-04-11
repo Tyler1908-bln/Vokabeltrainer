@@ -1,0 +1,49 @@
+{
+  "name": "vokabeltrainer-spanisch",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173 --strictPort",
+    "build": "npm run pwa:icons && tsc -b && vite build",
+    "preview": "vite preview",
+    "serve": "node --import tsx server/server.ts",
+    "pwa:icons": "node scripts/generate-pwa-icons.mjs",
+    "app:sync": "npm run build && npx cap sync",
+    "app:android": "npm run build && npx cap sync android",
+    "app:ios": "npm run build && npx cap sync ios",
+    "app:open:android": "npx cap open android",
+    "app:open:ios": "npx cap open ios",
+    "mobile": "cd mobile && npx expo start",
+    "mobile:tunnel": "cd mobile && npx expo start --tunnel",
+    "mobile:web": "cd mobile && npx expo start --web",
+    "expo:prebuild": "cd mobile && npm run prebuild",
+    "expo:prebuild:clean": "cd mobile && npm run prebuild:clean",
+    "expo:build:android": "cd mobile && npm run build:android",
+    "expo:build:ios": "cd mobile && npm run build:ios",
+    "expo:update:preview": "cd mobile && npm run update:preview",
+    "expo:update:production": "cd mobile && npm run update:production"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.3.0",
+    "@capacitor/cli": "^8.3.0",
+    "@capacitor/core": "^8.3.0",
+    "@capacitor/ios": "^8.3.0",
+    "express": "^5.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.15.3",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react": "^4.4.1",
+    "sharp": "^0.34.5",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-pwa": "^0.21.1"
+  }
+}
