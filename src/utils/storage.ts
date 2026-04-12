@@ -7,6 +7,7 @@ import {
 } from "./vocabCorrection";
 
 const STORAGE_KEY = "spanisch-vokabeltrainer-state";
+let pendingWrite: ReturnType<typeof setTimeout> | null = null;
 
 const defaultState: AppState = {
   entries: starterDeck,
@@ -148,11 +149,30 @@ export function loadState(): AppState {
 }
 
 export function saveState(state: AppState) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {
-    // Manche Handy-Browser blockieren lokalen Speicher. Die App soll trotzdem weiterlaufen.
+  const write = () => {
+    pendingWrite = null;
+
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      // Manche Handy-Browser blockieren lokalen Speicher. Die App soll trotzdem weiterlaufen.
+    }
+  };
+
+  if (pendingWrite !== null) {
+    clearTimeout(pendingWrite);
   }
+
+  if (
+    typeof globalThis !== "undefined" &&
+    "requestIdleCallback" in globalThis &&
+    typeof globalThis.requestIdleCallback === "function"
+  ) {
+    globalThis.requestIdleCallback(write, { timeout: 500 });
+    return;
+  }
+
+  pendingWrite = globalThis.setTimeout(write, 80);
 }
 
 export function buildEntry(input: {

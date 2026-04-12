@@ -59,6 +59,11 @@ function correctWord(
     .map((entry) => (language === "german" ? entry.german : entry.spanish))
     .filter((candidate): candidate is string => typeof candidate === "string");
 
+  const exactCandidate = findExactKnownMatch(cleaned, candidates);
+  if (exactCandidate) {
+    return exactCandidate;
+  }
+
   return findCloseMatch(cleaned, candidates) ?? cleaned;
 }
 
@@ -159,15 +164,26 @@ function findCloseMatch(value: string, candidates: string[]) {
     return null;
   }
 
+  const narrowedCandidates = candidates
+    .filter((candidate) => {
+      const normalizedCandidate = normalizeForCompare(candidate);
+
+      if (!normalizedCandidate || normalizedCandidate === normalizedValue) {
+        return false;
+      }
+
+      return (
+        normalizedCandidate[0] === normalizedValue[0] &&
+        Math.abs(normalizedCandidate.length - normalizedValue.length) <= 2
+      );
+    })
+    .slice(0, 80);
+
   let bestMatch: string | null = null;
   let bestDistance = Number.POSITIVE_INFINITY;
 
-  candidates.forEach((candidate) => {
+  narrowedCandidates.forEach((candidate) => {
     const normalizedCandidate = normalizeForCompare(candidate);
-
-    if (!normalizedCandidate || normalizedCandidate === normalizedValue) {
-      return;
-    }
 
     const distance = levenshteinDistance(normalizedValue, normalizedCandidate);
     const allowedDistance = normalizedValue.length >= 8 ? 2 : 1;
@@ -179,6 +195,16 @@ function findCloseMatch(value: string, candidates: string[]) {
   });
 
   return bestMatch;
+}
+
+function findExactKnownMatch(value: string, candidates: string[]) {
+  const normalizedValue = normalizeForCompare(value);
+
+  return (
+    candidates.find(
+      (candidate) => normalizeForCompare(candidate) === normalizedValue
+    ) ?? null
+  );
 }
 
 function matchesAny(text: string, terms: string[]) {

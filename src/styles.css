@@ -1300,8 +1300,10 @@ select:disabled {
 
 .modal-card {
   width: min(100%, 520px);
-  max-height: min(88vh, 760px);
-  overflow: hidden;
+  max-height: min(88vh, 88dvh, 760px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 1.25rem;
   border-radius: 28px;
   background: #ffffff;
