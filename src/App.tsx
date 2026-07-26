@@ -476,6 +476,29 @@ function App() {
     setFeedback("Es wurde alles gespeichert.");
   }
 
+  function isLikelyImportedPair(german: string, spanish: string) {
+    const normalizedGerman = normalizeSearchText(german);
+    const normalizedSpanish = normalizeSearchText(spanish);
+    const germanStopwords = new Set(["und", "oder", "aber", "mit", "ohne", "nur"]);
+    const spanishStopwords = new Set(["y", "o", "pero", "con", "sin", "solo"]);
+
+    if (
+      !normalizedGerman ||
+      !normalizedSpanish ||
+      normalizedGerman === normalizedSpanish ||
+      normalizedGerman.includes(normalizedSpanish) ||
+      normalizedSpanish.includes(normalizedGerman)
+    ) {
+      return false;
+    }
+
+    if (germanStopwords.has(normalizedSpanish) || spanishStopwords.has(normalizedGerman)) {
+      return false;
+    }
+
+    return true;
+  }
+
   function exportBackup() {
     const backup = {
       app: "spanisch-vokabeltrainer",
@@ -993,9 +1016,15 @@ function App() {
           return;
         }
 
-        const correctedCount = addImportedEntries(imageParsedLines);
+        const { correctedCount, insertedCount } = addImportedEntries(imageParsedLines);
+
+        if (!insertedCount) {
+          setFeedback("Es wurden keine neuen Vokabeln importiert.");
+          return;
+        }
+
         setFeedback(
-          `${imageParsedLines.length} Wörter automatisch aus dem Foto übernommen. ${
+          `${insertedCount} Wörter automatisch aus dem Foto übernommen. ${
             correctedCount ? `KI hat ${correctedCount} davon korrigiert.` : ""
           }`
         );
@@ -1010,9 +1039,15 @@ function App() {
         return;
       }
 
-      const correctedCount = addImportedEntries(parsedLines);
+      const { correctedCount, insertedCount } = addImportedEntries(parsedLines);
+
+      if (!insertedCount) {
+        setFeedback("Es wurden keine neuen Vokabeln importiert.");
+        return;
+      }
+
       setFeedback(
-        `${parsedLines.length} Wörter automatisch übernommen. ${
+        `${insertedCount} Wörter automatisch übernommen. ${
           correctedCount ? `KI hat ${correctedCount} davon korrigiert.` : ""
         }`
       );
@@ -1028,11 +1063,13 @@ function App() {
     parsedLines: Array<{ german: string; spanish: string; category: string }>
   ) {
     let correctedCount = 0;
+    let insertedCount = 0;
     const seen = new Set<string>();
     const validLines = parsedLines.filter((line) => {
       if (
         !isUsableVocabularyText(line.german) ||
-        !isUsableVocabularyText(line.spanish)
+        !isUsableVocabularyText(line.spanish) ||
+        !isLikelyImportedPair(line.german, line.spanish)
       ) {
         return false;
       }
@@ -1048,31 +1085,53 @@ function App() {
       seen.add(key);
       return true;
     });
-    const correctedLines = validLines.map((line) => {
-      const correction = correctVocabularyInput(line, state.entries);
+    const knownEntries = [...state.entries];
+    const importedEntries = validLines.flatMap((line) => {
+      const correction = correctVocabularyInput(line, knownEntries);
 
       if (correction.changed) {
         correctedCount += 1;
       }
 
-      return correction;
+      if (
+        !isLikelyImportedPair(correction.german, correction.spanish) ||
+        knownEntries.some(
+          (entry) =>
+            normalizeSearchText(entry.german) === normalizeSearchText(correction.german) &&
+            normalizeSearchText(entry.spanish) === normalizeSearchText(correction.spanish) &&
+            normalizeSearchText(entry.category) === normalizeSearchText(correction.category)
+        )
+      ) {
+        return [];
+      }
+
+      const newEntry = buildEntry({
+        german: correction.german,
+        spanish: correction.spanish,
+        category: correction.category || "Importiert"
+      });
+
+      knownEntries.push(newEntry);
+      insertedCount += 1;
+      return [newEntry];
     });
+
+    if (!importedEntries.length) {
+      return {
+        correctedCount,
+        insertedCount
+      };
+    }
 
     setState((current) => ({
       ...current,
-      entries: [
-        ...current.entries,
-        ...correctedLines.map((line) =>
-          buildEntry({
-            german: line.german,
-            spanish: line.spanish,
-            category: line.category || "Importiert"
-          })
-        )
-      ]
+      entries: [...current.entries, ...importedEntries]
     }));
 
-    return correctedCount;
+    return {
+      correctedCount,
+      insertedCount
+    };
   }
 
   async function handleInstall() {
@@ -1811,7 +1870,7 @@ function App() {
               <span>Datei oder Foto auswählen</span>
               <input
                 type="file"
-                accept="image/*,.txt,.csv,.json"
+                accept="image/*,.txt,.csv"
                 onChange={handleScanFile}
                 disabled={scanBusy}
               />
